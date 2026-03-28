@@ -1,7 +1,7 @@
 "use client";
 
 import "./globals.css";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const REELS = [
   { name: "reel_6_16", label: "First Sale — $30 to Joey" },
@@ -15,51 +15,104 @@ const REELS = [
   { name: "reel_6_25", label: "Convention Energy" },
 ];
 
+const STEPS = [
+  { num: "1", label: "Detect speech" },
+  { num: "2", label: "Whisper transcribe" },
+  { num: "3", label: "YOLOv8 smart crop" },
+  { num: "4", label: "LLM scoring" },
+  { num: "5", label: "Jump cut dead air" },
+  { num: "6", label: "Remotion render" },
+  { num: "7", label: "Audio enhance" },
+  { num: "8", label: "Platform export" },
+];
+
+function useScrollReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("animate-in");
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return ref;
+}
+
+function Section({ children, label, className = "" }: {
+  children: React.ReactNode;
+  label?: string;
+  className?: string;
+}) {
+  const ref = useScrollReveal();
+  return (
+    <div ref={ref} className={`section ${className}`} style={{ opacity: 0 }}>
+      {label && (
+        <div className="section-label">{label}</div>
+      )}
+      {children}
+    </div>
+  );
+}
+
 export default function Home() {
   const [modalVideo, setModalVideo] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (modalVideo) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [modalVideo]);
+
   return (
     <>
-      {/* Hero */}
+      {/* ── Hero ── */}
       <div className="hero">
-        <h1>
+        <h1 className="animate-in" style={{ animationDelay: "0.1s" }}>
           Editor<span>Bot</span>
         </h1>
-        <p className="tagline">
-          AI video editor that turns raw convention footage into platform-ready
-          reels. Upload once, get a week of content.
+        <p className="tagline animate-in" style={{ animationDelay: "0.25s" }}>
+          One video in. Nine reels out.
+          <br />
+          AI that edits convention footage into content.
         </p>
-        <div className="stats">
+        <div className="stats animate-in" style={{ animationDelay: "0.4s" }}>
           <div className="stat">
-            <div className="stat-val" style={{ color: "var(--teal)" }}>20:54</div>
-            <div className="stat-label">Input Video</div>
+            <div className="stat-val">20:54</div>
+            <div className="stat-label">Input</div>
           </div>
           <div className="stat">
-            <div className="stat-val" style={{ color: "var(--gold)" }}>9</div>
-            <div className="stat-label">Reels Created</div>
+            <div className="stat-val">9</div>
+            <div className="stat-label">Reels</div>
           </div>
           <div className="stat">
-            <div className="stat-val" style={{ color: "var(--green)" }}>10</div>
-            <div className="stat-label">Clips Detected</div>
+            <div className="stat-val">10</div>
+            <div className="stat-label">Clips</div>
           </div>
           <div className="stat">
-            <div className="stat-val" style={{ color: "var(--rose)" }}>1</div>
-            <div className="stat-label">Skipped (Low Score)</div>
+            <div className="stat-val">1</div>
+            <div className="stat-label">Skipped</div>
           </div>
         </div>
-        <div className="scroll-hint">scroll to see the results ↓</div>
+        <div className="scroll-hint">Scroll to see results</div>
       </div>
 
-      {/* Before / After */}
-      <div className="section">
-        <div className="section-label" style={{ color: "var(--teal)" }}>
-          Before &amp; After
-        </div>
-        <h2>21 Minutes In, 9 Reels Out</h2>
+      {/* ── Before / After ── */}
+      <Section label="Before & After">
+        <h2>21 minutes in, 9 reels out</h2>
         <p className="lead">
-          Raw horizontal booth footage from HYPE-CON Bay Area, transformed into
-          vertical reels with word-by-word captions, smart crop, overlays, and
-          brand watermark. The AI scored each moment and kept only the best.
+          Raw booth footage from HYPE-CON Bay Area, transformed into vertical
+          reels with captions, smart crop, and brand watermark.
         </p>
         <div className="compare">
           <div className="compare-card">
@@ -67,15 +120,15 @@ export default function Home() {
               width="100%"
               style={{ aspectRatio: "16/9" }}
               src="https://www.youtube.com/embed/IKS89VMWG9k"
-              title="HYPE-CON Bay Area Vendor POV — Original"
+              title="HYPE-CON Bay Area — Original"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
             <div className="info">
               <div className="badge badge-before">Before</div>
-              <h3>Raw Booth Footage (Full 21 min)</h3>
-              <p>20:54 · Horizontal · No captions · No crop</p>
+              <h3>Raw Booth Footage</h3>
+              <p>20:54 · Horizontal · No captions</p>
             </div>
           </div>
           <div className="compare-card">
@@ -83,26 +136,26 @@ export default function Home() {
               controls
               preload="metadata"
               playsInline
+              poster="/thumbnails/reel_6_16.jpg"
               src="/videos/reel_6_16.mp4"
+              style={{ aspectRatio: "16/9" }}
             />
             <div className="info">
               <div className="badge badge-after">After</div>
               <h3>First Sale — $30 to Joey</h3>
-              <p>24s · Vertical 9:16 · Bold captions · @PokeBowl</p>
+              <p>24s · Vertical 9:16 · Captions · @PokeBowl</p>
             </div>
           </div>
         </div>
-      </div>
+      </Section>
 
-      {/* Reel Gallery */}
-      <div className="section">
-        <div className="section-label" style={{ color: "var(--gold)" }}>
-          All Reels
-        </div>
-        <h2>Every Reel from One Video</h2>
+      <div className="divider" />
+
+      {/* ── Reel Gallery ── */}
+      <Section label="All Reels">
+        <h2>Every reel from one video</h2>
         <p className="lead">
-          Click any reel to watch it. Each one was auto-detected, scored,
-          cropped, captioned, and rendered by the pipeline.
+          Each one was auto-detected, scored, cropped, captioned, and rendered.
         </p>
         <div className="reel-gallery">
           {REELS.map((reel) => (
@@ -113,7 +166,8 @@ export default function Home() {
             >
               <video
                 preload="metadata"
-                src={`/videos/${reel.name}.mp4#t=0.1`}
+                poster={`/thumbnails/${reel.name}.jpg`}
+                src={`/videos/${reel.name}.mp4`}
                 muted
                 playsInline
               />
@@ -124,61 +178,50 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </div>
+      </Section>
 
-      {/* Pipeline */}
-      <div className="section">
-        <div className="section-label" style={{ color: "var(--rose)" }}>
-          How It Works
-        </div>
-        <h2>The Pipeline</h2>
+      <div className="divider" />
+
+      {/* ── Pipeline ── */}
+      <Section label="How It Works">
+        <h2>The pipeline</h2>
         <p className="lead">
-          Every reel goes through 8 steps. No manual editing, no templates, no
-          CapCut. Upload your footage and review what the AI found.
+          Eight steps. No manual editing, no templates.
+          Upload footage, review what the AI found.
         </p>
-        <div className="pipeline-steps">
-          {[
-            { num: "1", label: "Detect speech", color: "var(--gold)" },
-            { num: "2", label: "Whisper transcribe", color: "var(--teal)" },
-            { num: "3", label: "YOLOv8 smart crop", color: "var(--rose)" },
-            { num: "4", label: "LLM scoring", color: "var(--gold)" },
-            { num: "5", label: "Jump cut dead air", color: "var(--teal)" },
-            { num: "6", label: "Remotion render", color: "var(--green)" },
-            { num: "7", label: "Audio enhance", color: "var(--rose)" },
-            { num: "8", label: "Platform export", color: "var(--gold)" },
-          ].map((step) => (
-            <div key={step.num} className="p-step" style={{ borderBottomColor: step.color }}>
-              <div className="num" style={{ color: step.color }}>{step.num}</div>
-              <div className="label">{step.label}</div>
+        <div className="pipeline">
+          {STEPS.map((step) => (
+            <div key={step.num} className="p-step">
+              <div className="num">{step.num}</div>
+              <div className="step-label">{step.label}</div>
             </div>
           ))}
         </div>
-      </div>
+      </Section>
 
-      {/* Source */}
-      <div className="section" style={{ textAlign: "center" }}>
-        <p className="lead" style={{ margin: "0 auto" }}>
-          Source video:{" "}
+      {/* ── Source ── */}
+      <div className="source">
+        <p>
+          Source:{" "}
           <a
             href="https://youtube.com/watch?v=IKS89VMWG9k"
             target="_blank"
             rel="noopener"
-            style={{ color: "var(--teal)" }}
           >
             HYPE-CON Bay Area Vendor POV
-          </a>{" "}
-          by PokeBowl
+          </a>
+          {" "}by PokeBowl
         </p>
       </div>
 
-      {/* Footer */}
+      {/* ── Footer ── */}
       <div className="footer">
         Built with{" "}
-        <a href="https://github.com/vnakhate/botworld">EditorBot</a> — part of
-        the Botworld platform.
+        <a href="https://github.com/vnakhate/botworld">EditorBot</a>
+        {" "}— Botworld
       </div>
 
-      {/* Modal */}
+      {/* ── Modal ── */}
       {modalVideo && (
         <div className="modal open" onClick={() => setModalVideo(null)}>
           <button className="modal-close" onClick={() => setModalVideo(null)}>
@@ -188,6 +231,7 @@ export default function Home() {
             controls
             autoPlay
             playsInline
+            poster={modalVideo.replace("/videos/", "/thumbnails/").replace(".mp4", ".jpg")}
             src={modalVideo}
             onClick={(e) => e.stopPropagation()}
           />
