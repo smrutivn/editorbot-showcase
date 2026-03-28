@@ -113,7 +113,7 @@ export default function Home() {
             >
               <video
                 preload="metadata"
-                src={`/videos/${reel.name}.mp4`}
+                src={`/videos/${reel.name}.mp4#t=0.1`}
                 muted
                 playsInline
               />
