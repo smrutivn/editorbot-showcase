@@ -4,9 +4,9 @@ import "./globals.css";
 import { useState, useEffect, useRef } from "react";
 
 const REELS = [
-  { name: "reel_6_16", label: "First Sale — $30 to Joey" },
-  { name: "reel_6_17", label: "Lucario Pickup — $15 Deal" },
-  { name: "reel_6_18", label: "Don Reveal — Group Reaction" },
+  { name: "reel_6_16", label: "First Sale" },
+  { name: "reel_6_17", label: "Card Pickup" },
+  { name: "reel_6_18", label: "Big Reveal — Group Reaction" },
   { name: "reel_6_19", label: "Trade Negotiation" },
   { name: "reel_6_21", label: "Collection Showcase" },
   { name: "reel_6_22", label: "Coin Flip Challenge" },
@@ -17,11 +17,11 @@ const REELS = [
 
 const STEPS = [
   { num: "1", label: "Detect speech" },
-  { num: "2", label: "Whisper transcribe" },
-  { num: "3", label: "YOLOv8 smart crop" },
-  { num: "4", label: "LLM scoring" },
+  { num: "2", label: "Transcribe audio" },
+  { num: "3", label: "Smart crop" },
+  { num: "4", label: "AI scoring" },
   { num: "5", label: "Jump cut dead air" },
-  { num: "6", label: "Remotion render" },
+  { num: "6", label: "Render clips" },
   { num: "7", label: "Audio enhance" },
   { num: "8", label: "Platform export" },
 ];
@@ -111,8 +111,8 @@ export default function Home() {
       <Section label="Before & After">
         <h2>21 minutes in, 9 reels out</h2>
         <p className="lead">
-          Raw booth footage from HYPE-CON Bay Area, transformed into vertical
-          reels with captions, smart crop, and brand watermark.
+          Raw booth footage from a trading card convention, transformed into
+          vertical reels with captions, smart crop, and brand watermark.
         </p>
         <div className="compare">
           <div className="compare-card">
@@ -120,7 +120,7 @@ export default function Home() {
               width="100%"
               style={{ aspectRatio: "16/9" }}
               src="https://www.youtube.com/embed/IKS89VMWG9k"
-              title="HYPE-CON Bay Area — Original"
+              title="Convention Footage — Original"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -142,8 +142,8 @@ export default function Home() {
             />
             <div className="info">
               <div className="badge badge-after">After</div>
-              <h3>First Sale — $30 to Joey</h3>
-              <p>24s · Vertical 9:16 · Captions · @PokeBowl</p>
+              <h3>First Sale</h3>
+              <p>24s · Vertical 9:16 · Captions</p>
             </div>
           </div>
         </div>
@@ -202,15 +202,7 @@ export default function Home() {
       {/* ── Source ── */}
       <div className="source">
         <p>
-          Source:{" "}
-          <a
-            href="https://youtube.com/watch?v=IKS89VMWG9k"
-            target="_blank"
-            rel="noopener"
-          >
-            HYPE-CON Bay Area Vendor POV
-          </a>
-          {" "}by PokeBowl
+          Sample footage from a trading card convention
         </p>
       </div>
 
